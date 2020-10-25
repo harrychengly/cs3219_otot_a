@@ -1,0 +1,5 @@
+FROM nginx:1.19.3-alpine
+COPY /public /usr/share/nginx/html
+COPY ./StaticSite.conf /etc/nginx/conf.d/StaticSite.conf
+EXPOSE 4000
+CMD ["/bin/sh", "-c", "exec nginx -g 'daemon off;'"]

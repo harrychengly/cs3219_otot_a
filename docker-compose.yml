@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  backend:
+    build:
+        dockerfile: DockerFile
+        context: ./backend
+    image: harrychengly/cs3219_otot_a_backend
+    volumes:
+        - /usr/share/cs3219_server_app/node_modules
+        - ./backend:/usr/share/cs3219_server_app
+    container_name: backend
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+  frontend:
+    build:
+        dockerfile: DockerFile
+        context: ./frontend
+    image: harrychengly/cs3219_otot_a_frontend
+    volumes:
+        - ./frontend/public:/usr/share/nginx/html
+        - ./frontend/StaticSite.conf:/etc/nginx/conf.d/StaticSite.conf
+    container_name: frontend
+    ports:
+      - 4000:4000
+    restart: unless-stopped
+  nginxreverseproxy:
+    build:
+      dockerfile: DockerFile
+      context: ./nginxreverseproxy
+    image: harrychengly/cs3219_otot_a_nginx_reverse_proxy
+    volumes:
+      - ./nginxreverseproxy/default.conf:/etc/nginx/conf.d/default.conf
+    container_name: ngixreverseproxy
+    ports:
+      - 80:80
+    restart: always
+    depends_on:
+      - frontend
+      - backend
